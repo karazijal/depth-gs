@@ -7,3 +7,6 @@
 [submodule "ZoeDepth"]
 	path = ZoeDepth
 	url = https://github.com/isl-org/ZoeDepth.gitW
+[submodule "submodules/depth-splatting"]
+	path = submodules/depth-splatting
+	url = git@github.com:karazijal/depth-splatting.git
