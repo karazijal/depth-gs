@@ -143,7 +143,13 @@ def readColmapCameras(cam_extrinsics, cam_intrinsics, images_folder, pcd=None, r
             depth_weight = depth_weight/depth_weight.max()
 
             if model_zoe is None:
-                model_zoe = torch.hub.load("./ZoeDepth", "ZoeD_NK", source="local", pretrained=True).to('cuda')
+                # model_zoe = torch.hub.load("./ZoeDepth", "ZoeD_NK", source="local", pretrained=True).to('cuda')
+                model_zoe = torch.hub.load("./ZoeDepth", "ZoeD_NK", source="local", pretrained=False)
+                for b in model_zoe.core.core.pretrained.model.blocks:
+                    b.drop_path = torch.nn.Identity()
+                state_dict = torch.hub.load_state_dict_from_url('https://github.com/isl-org/ZoeDepth/releases/download/v1.0/ZoeD_M12_NK.pt', map_location='cpu')
+                model_zoe.load_state_dict(state_dict['model'], strict=False)
+                model_zoe = model_zoe.to('cuda')
             
             source_depth = model_zoe.infer_pil(image.convert("RGB"))
             target=depthmap.copy()

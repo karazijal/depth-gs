@@ -40,10 +40,10 @@ def render(viewpoint_camera, pc : GaussianModel, pipe, bg_color : torch.Tensor, 
         tanfovy=tanfovy,
         bg=bg_color,
         scale_modifier=scaling_modifier,
-        viewmatrix=viewpoint_camera.world_view_transform,
-        projmatrix=viewpoint_camera.full_proj_transform,
+        viewmatrix=viewpoint_camera.world_view_transform.contiguous(),
+        projmatrix=viewpoint_camera.full_proj_transform.contiguous(),
         sh_degree=pc.active_sh_degree,
-        campos=viewpoint_camera.camera_center,
+        campos=viewpoint_camera.camera_center.contiguous(),
         prefiltered=False,
         debug=pipe.debug
     )
@@ -60,6 +60,7 @@ def render(viewpoint_camera, pc : GaussianModel, pipe, bg_color : torch.Tensor, 
     rotations = None
     cov3D_precomp = None
     if pipe.compute_cov3D_python:
+        print('Computing 3D covariance in Python')
         cov3D_precomp = pc.get_covariance(scaling_modifier)
     else:
         scales = pc.get_scaling
@@ -71,6 +72,7 @@ def render(viewpoint_camera, pc : GaussianModel, pipe, bg_color : torch.Tensor, 
     colors_precomp = None
     if override_color is None:
         if pipe.convert_SHs_python:
+            print('Converting SHs to RGB in Python')
             shs_view = pc.get_features.transpose(1, 2).view(-1, 3, (pc.max_sh_degree+1)**2)
             dir_pp = (pc.get_xyz - viewpoint_camera.camera_center.repeat(pc.get_features.shape[0], 1))
             dir_pp_normalized = dir_pp/dir_pp.norm(dim=1, keepdim=True)
@@ -84,13 +86,13 @@ def render(viewpoint_camera, pc : GaussianModel, pipe, bg_color : torch.Tensor, 
     # Rasterize visible Gaussians to image, obtain their radii (on screen). 
     # rendered_image, radii, depth = rasterizer(
     rendered_image, depth, acc, radii = rasterizer(
-        means3D = means3D,
+        means3D = means3D.contiguous(),
         means2D = means2D,
-        shs = shs,
+        shs = shs.contiguous(),
         colors_precomp = colors_precomp,
-        opacities = opacity,
-        scales = scales,
-        rotations = rotations,
+        opacities = opacity.contiguous(),
+        scales = scales.contiguous(),
+        rotations = rotations.contiguous(),
         cov3D_precomp = cov3D_precomp)
 
     # Those Gaussians that were frustum culled or had a radius of 0 were not visible.
