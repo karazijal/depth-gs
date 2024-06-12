@@ -7,12 +7,6 @@
 [submodule "ZoeDepth"]
 	path = ZoeDepth
 	url = https://github.com/isl-org/ZoeDepth.git
-[submodule "submodules/diff-gaussian-rasterization"]
-	path = submodules/diff-gaussian-rasterization
-	url = git@github.com:graphdeco-inria/diff-gaussian-rasterization.git
-[submodule "submodules/gsplat"]
-	path = submodules/gsplat
-	url = git@github.com:nerfstudio-project/gsplat.git
-[submodule "submodules/diff-gaussian-rasterization-depth-acc-mod"]
-	path = submodules/diff-gaussian-rasterization-depth-acc-mod
-	url = git@github.com:robot0321/diff-gaussian-rasterization-depth-acc.git
+[submodule "submodules/depth-splatting"]
+	path = submodules/depth-splatting
+	url = git@github.com:karazijal/depth-splatting.git
