@@ -214,30 +214,54 @@ import torch.nn as nn
 mu = nn.Parameter(xyz, requires_grad=True)
 S = nn.Parameter(scales, requires_grad=True)
 q = nn.Parameter(quats, requires_grad=True)
-# o = nn.Parameter(opacity, requires_grad=True)
-opt = torch.optim.Adam([mu, S, q], lr=0.0001)
+o = nn.Parameter(opacity, requires_grad=True)
+opt = torch.optim.Adam([
+    {"params": mu, 'lr': 0.00016, 'name': 'xyz'},
+    {"params": S, 'lr': 0.005, 'name': 'scales'},
+    {"params": q, 'lr': 0.001, 'name': 'quats'},
+    {"params": o, 'lr': 0.05 , 'name': 'opacity'}
+], eps=1e-15)
+
+spatial_lr_scale = 1.0
+min_iters = 1500
+position_lr_init = 0.00016
+position_lr_final = 0.0000016
+position_lr_delay_mult = 0.01
+position_lr_max_steps = 30_000
+from utils.general_utils import get_expon_lr_func
+xyz_scheduler_args = get_expon_lr_func(lr_init=position_lr_init*spatial_lr_scale,
+                                        lr_final=position_lr_final*spatial_lr_scale,
+                                        lr_delay_mult=position_lr_delay_mult,
+                                        max_steps=position_lr_max_steps)
+
 
 frames = []
 for i in range(10000):
     opt.zero_grad()
+    for param_group in opt.param_groups:
+        if param_group["name"] == "xyz":
+            lr = xyz_scheduler_args(i)
+            param_group['lr'] = lr
+    opa = o.sigmoid()
     nll = depth.rasterize_depth_gaussians(
         mu,
         S,
         q / q.norm(dim=1, keepdim=True).clamp(min=1e-6),
-        opacity,
+        opa,
         gt_depth,
         raster_settings=raster_settings
     )[0]
     loss = nll.sum()
     loss.backward()
     opt.step()
+
     # print(loss.item())
-    if i % 100 == 0:
+    if i % 10 == 0:
         clear_output(wait=True)
         fig, ax = plt.subplots(1, 3, figsize=(15, 5))
         ret = render(
             means3D=xyz,
-            opacity=opacity,
+            opacity=opa,
             scales=scales,
             rotations=quats,
             colors_precomp=colors
@@ -248,12 +272,15 @@ for i in range(10000):
 
         ax[0].imshow(img)
         ax[0].axis('off')
+        ax[0].set_title('RGB')
 
         ax[1].imshow(dis, cmap='jet', vmin=1, vmax=12)
         ax[1].axis('off')
+        ax[1].set_title('Depth')
 
         ax[2].imshow(nll.detach().cpu().numpy())
         ax[2].axis('off')
+        ax[2].set_title('NLL')
 
         # display(fig)
         with io.BytesIO() as buf:

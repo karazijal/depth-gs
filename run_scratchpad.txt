@@ -1,0 +1,29 @@
+
+
+
+sbatch --job-name 3dgs-fern slurm.bash python train.py -s data/nerf_llff_fewshot_resize/fern/ --eval --resolution 1 --kshot 5 --seed 42 --expname baseline-ferm_baseline_3dgs
+sbatch --job-name 3dgs-horn slurm.bash python train.py -s data/nerf_llff_fewshot_resize/horns/ --eval --resolution 1 --kshot 5 --seed 42 --expname baseline-ferm_baseline_3dgs
+sbatch --job-name 3dgs-trex slurm.bash python train.py -s data/nerf_llff_fewshot_resize/trex/ --eval --resolution 1 --kshot 5 --seed 42 --expname baseline-ferm_baseline_3dgs
+
+
+sbatch --job-name 3dgs-depth-fern slurm.bash python train.py -s data/nerf_llff_fewshot_resize/fern/ --eval --resolution 1 --kshot 5 --seed 42 --depth --usedepthReg --expname depth-nostop
+sbatch --job-name 3dgs-depth-horn slurm.bash python train.py -s data/nerf_llff_fewshot_resize/horns/ --eval --resolution 1 --kshot 5 --seed 42 --depth --usedepthReg --expname depth-nostop
+sbatch --job-name 3dgs-depth-trex slurm.bash python train.py -s data/nerf_llff_fewshot_resize/trex/ --eval --resolution 1 --kshot 5 --seed 42 --depth --usedepthReg --expname depth-nostop
+
+
+sbatch --job-name 3dgs-depth-fern slurm.bash python train.py -s data/nerf_llff_fewshot_resize/fern/ --eval --resolution 1 --kshot 5 --seed 42 --depth --usedepthReg --expname depth-nostop-FSH --forceSH
+sbatch --job-name 3dgs-depth-horn slurm.bash python train.py -s data/nerf_llff_fewshot_resize/horns/ --eval --resolution 1 --kshot 5 --seed 42 --depth --usedepthReg --expname depth-nostop-FSH --forceSH
+sbatch --job-name 3dgs-depth-trex slurm.bash python train.py -s data/nerf_llff_fewshot_resize/trex/ --eval --resolution 1 --kshot 5 --seed 42 --depth --usedepthReg --expname depth-nostop-FSH --forceSH
+
+sbatch --job-name 3dgs-fern-disp slurm.bash python train.py -s data/nerf_llff_fewshot_resize/fern/ --eval --resolution 1 --kshot 5 --seed 42 --depth --usedepthReg --expname disp-nostop --depthvariant disp
+sbatch --job-name 3dgs-horn-disp slurm.bash python train.py -s data/nerf_llff_fewshot_resize/horns/ --eval --resolution 1 --kshot 5 --seed 42 --depth --usedepthReg --expname disp-nostop --depthvariant disp
+sbatch --job-name 3dgs-trex-disp slurm.bash python train.py -s data/nerf_llff_fewshot_resize/trex/ --eval --resolution 1 --kshot 5 --seed 42 --depth --usedepthReg --expname disp-nostop --depthvariant disp
+
+sbatch --job-name 3dgs-fern-logdisp slurm.bash python train.py -s data/nerf_llff_fewshot_resize/fern/ --eval --resolution 1 --kshot 5 --seed 42 --depth --usedepthReg --expname logdisp-nostop --depthvariant logdisp
+sbatch --job-name 3dgs-horn-logdisp slurm.bash python train.py -s data/nerf_llff_fewshot_resize/horns/ --eval --resolution 1 --kshot 5 --seed 42 --depth --usedepthReg --expname logdisp-nostop --depthvariant logdisp
+sbatch --job-name 3dgs-trex-logdisp slurm.bash python train.py -s data/nerf_llff_fewshot_resize/trex/ --eval --resolution 1 --kshot 5 --seed 42 --depth --usedepthReg --expname logdisp-nostop --depthvariant logdisp
+
+sbatch --job-name 3dgs-fern-ratio slurm.bash python train.py -s data/nerf_llff_fewshot_resize/fern/ --eval --resolution 1 --kshot 5 --seed 42 --depth --usedepthReg --expname ratio-nostop --depthvariant ratio
+sbatch --job-name 3dgs-horn-ratio slurm.bash python train.py -s data/nerf_llff_fewshot_resize/horns/ --eval --resolution 1 --kshot 5 --seed 42 --depth --usedepthReg --expname ratio-nostop --depthvariant ratio
+sbatch --job-name 3dgs-trex-ratio slurm.bash python train.py -s data/nerf_llff_fewshot_resize/trex/ --eval --resolution 1 --kshot 5 --seed 42 --depth --usedepthReg --expname ratio-nostop --depthvariant ratio
+
